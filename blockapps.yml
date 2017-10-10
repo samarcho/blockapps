@@ -1,0 +1,994 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: bloch
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: bloch
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: bloch
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: bloch
+      spec:
+        containers:
+        - env:
+          - name: cirrusurl
+            value: nginx/cirrus
+          - name: pghost
+            value: postgres
+          - name: pgpasswd
+          - name: pguser
+            value: postgres
+          - name: ssl
+          - name: stratoHost
+            value: nginx
+          - name: stratourl
+            value: http://strato/strato-api/eth/v1.2
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
+          name: bloch
+          ports:
+          - containerPort: 8000
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - bloch
+        from:
+          kind: ImageStreamTag
+          name: bloch:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: blockapps-docs
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: blockapps-docs
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: blockapps-docs
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: blockapps-docs
+      spec:
+        containers:
+        - env:
+          - name: API_URL
+            value: /strato-api/eth/v1.2/swagger.json
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
+          name: blockapps-docs
+          ports:
+          - containerPort: 8080
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - blockapps-docs
+        from:
+          kind: ImageStreamTag
+          name: blockapps-docs:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: silo-cirrus
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: cirrus
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: cirrus
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: cirrus
+      spec:
+        containers:
+        - env:
+          - name: postgres_db
+            value: cirrus
+          - name: postgres_host
+            value: postgres
+          - name: postgres_password
+          - name: postgres_port
+            value: "5432"
+          - name: postgres_user
+            value: postgres
+          - name: stratourl
+            value: http://starto/strato-api/eth/v1.2
+          - name: zookeeper_conn
+            value: zookeeper:2181
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
+          name: cirrus
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - cirrus
+        from:
+          kind: ImageStreamTag
+          name: silo-cirrus:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: kafka
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: kafka
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: kafka
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: kafka
+      spec:
+        containers:
+        - env:
+          - name: KAFKA_ADVERTISED_HOST_NAME
+            value: kafka
+          - name: KAFKA_ADVERTISED_PORT
+            value: "9092"
+          - name: KAFKA_DELETE_TOPIC_ENABLE
+            value: "true"
+          - name: KAFKA_LOG_CLEANER_ENABLE
+            value: "false"
+          - name: KAFKA_LOG_RETENTION_HOURS
+            value: "2147483647"
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: zookeeper:2181
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
+          name: kafka
+          ports:
+          - containerPort: 9092
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - kafka
+        from:
+          kind: ImageStreamTag
+          name: kafka:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: nginx
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: nginx
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: nginx
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: nginx
+      spec:
+        containers:
+        - env:
+          - name: ssl
+          - name: uiPassword
+            value: admin
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
+          name: nginx
+          ports:
+          - containerPort: 443
+          - containerPort: 80
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - nginx
+        from:
+          kind: ImageStreamTag
+          name: nginx:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: postgres
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: postgres
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: postgres
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: postgres
+      spec:
+        containers:
+        - image: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
+          name: postgres
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgres
+        from:
+          kind: ImageStreamTag
+          name: postgres:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: postgres-cirrus
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: postgres:9.6
+      from:
+        kind: DockerImage
+        name: postgres:9.6
+      generation: null
+      importPolicy: {}
+      name: "9.6"
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: postgres-cirrus
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: postgres-cirrus
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: postgres-cirrus
+      spec:
+        containers:
+        - env:
+          - name: PG_ENV_POSTGRES_DB
+            value: cirrus
+          - name: PG_ENV_POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: cirrus
+          - name: POSTGRES_USER
+            value: postgres
+          image: postgres:9.6
+          name: postgres-cirrus
+          ports:
+          - containerPort: 5432
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgres-cirrus
+        from:
+          kind: ImageStreamTag
+          name: postgres-cirrus:9.6
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: postgrest
+  spec:
+    tags:
+    - annotations:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: postgrest
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: postgrest
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: postgrest
+      spec:
+        containers:
+        - env:
+          - name: PG_ENV_POSTGRES_DB
+            value: cirrus
+          - name: PG_ENV_POSTGRES_HOST
+            value: postgres-cirrus
+          - name: PG_ENV_POSTGRES_PASSWORD
+          - name: PG_ENV_POSTGRES_USER
+            value: postgres
+          - name: PG_PORT_5432_TCP_PORT
+            value: "5432"
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
+          name: postgrest
+          ports:
+          - containerPort: 3001
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgrest
+        from:
+          kind: ImageStreamTag
+          name: postgrest:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: redis
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: redis:3.2
+      from:
+        kind: DockerImage
+        name: redis:3.2
+      generation: null
+      importPolicy: {}
+      name: "3.2"
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: redis
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: redis
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: redis
+      spec:
+        containers:
+        - args:
+          - redis-server
+          - --appendonly
+          - "yes"
+          image: redis:3.2
+          name: redis
+          ports:
+          - containerPort: 6379
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - redis
+        from:
+          kind: ImageStreamTag
+          name: redis:3.2
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: smd-ui
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: smd-ui
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: smd-ui
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: smd-ui
+      spec:
+        containers:
+        - env:
+          - name: BLOC_DOC_URL
+            value: http://block-docs/docs/?url=/bloc/v2.1/swagger.json
+          - name: BLOC_URL
+            value: http://bloch/bloc/v2.1
+          - name: CIRRUS_URL
+            value: http://cirrus//cirrussearch
+          - name: NODE_NAME
+          - name: STRATO_DOC_URL
+          - name: STRATO_GS_MODE
+          - name: STRATO_URL
+            value: http://starto/strato-api/eth/v1.2
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
+          name: smd-ui
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - smd-ui
+        from:
+          kind: ImageStreamTag
+          name: smd-ui:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: strato
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: strato
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: strato
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: strato
+      spec:
+        containers:
+        - env:
+          - name: addBootnodes
+          - name: backupblocks
+          - name: blockTime
+          - name: bootnode
+          - name: debugFail
+          - name: evmDebugMode
+          - name: evmTraceMode
+          - name: genesis
+          - name: genesisBlock
+          - name: lazyBlocks
+          - name: minBlockDifficulty
+          - name: mineBlocks
+            value: "true"
+          - name: miningAlgorithm
+          - name: miningThreads
+          - name: networkID
+          - name: noMinPeers
+            value: "false"
+          - name: redisBDBNumber
+          - name: statsEnable
+          - name: statsFlush
+          - name: statsHost
+          - name: statsPort
+          - name: statsPrefix
+          - name: statsSuffix
+          - name: useSyncMode
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
+          name: strato
+          ports:
+          - containerPort: 30303
+          - containerPort: 3000
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - strato
+        from:
+          kind: ImageStreamTag
+          name: strato:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: zookeeper
+  spec:
+    tags:
+    - annotations:
+    - annotations:
+        openshift.io/imported-from: zookeeper:3.4.9
+      from:
+        kind: DockerImage
+        name: zookeeper:3.4.9
+      generation: null
+      importPolicy: {}
+      name: 3.4.9
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: zookeeper
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: zookeeper
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: zookeeper
+      spec:
+        containers:
+        - env:
+          - name: ZOO_MY_ID
+            value: "1"
+          image: zookeeper:3.4.9
+          name: zookeeper
+          ports:
+          - containerPort: 2181
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - zookeeper
+        from:
+          kind: ImageStreamTag
+          name: zookeeper:3.4.9
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: bloch
+  spec:
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      targetPort: 8000
+    selector:
+      deploymentconfig: bloch
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: blockapps-docs
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      targetPort: 8080
+    selector:
+      deploymentconfig: blockapps-docs
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: kafka
+  spec:
+    ports:
+    - name: 9092-tcp
+      port: 9092
+      targetPort: 9092
+    selector:
+      deploymentconfig: kafka
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: nginx
+  spec:
+    ports:
+    - name: 80-tcp
+      port: 80
+      targetPort: 80
+    - name: 443-tcp
+      port: 443
+      targetPort: 443
+    selector:
+      deploymentconfig: nginx
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: postgres
+  spec:
+    ports:
+    - name: 5432-tcp
+      port: 5432
+      targetPort: 5432
+    selector:
+      deploymentconfig: postgres-cirrus
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: postgrest
+  spec:
+    ports:
+    - name: 3001-tcp
+      port: 3001
+      targetPort: 3001
+    selector:
+      deploymentconfig: postgrest
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: redis
+  spec:
+    ports:
+    - name: 6379-tcp
+      port: 6379
+      targetPort: 6379
+    selector:
+      deploymentconfig: redis
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: strato
+  spec:
+    ports:
+    - name: 3000-tcp
+      port: 3000
+      targetPort: 3000
+    - name: 30303-tcp
+      port: 30303
+      targetPort: 30303
+    selector:
+      deploymentconfig: strato
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: smd-ui
+  spec:
+    ports:
+    - name: 3002-tcp
+      port: 3002
+      targetPort: 3002
+    selector:
+      deploymentconfig: smd-ui
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: cirrus
+  spec:
+    ports:
+    - name: 3333-tcp
+      port: 3333
+      targetPort: 3333
+    selector:
+      deploymentconfig: cirrus
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: zookeeper
+  spec:
+    ports:
+    - name: 2181-tcp
+      port: 2181
+      targetPort: 2181
+    selector:
+      deploymentconfig: zookeeper
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
