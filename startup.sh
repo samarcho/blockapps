@@ -17,5 +17,5 @@ oc secrets new docker-pull-secret-dev .dockerconfigjson=${HOME}/.docker/config.j
 oc secrets link default docker-pull-secret-dev --for=pull 
 
 
-oc create -f blockapps.yaml
+oc create -f blockapps.yml
 
