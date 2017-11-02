@@ -45,7 +45,7 @@ items:
         - bloch
         from:
           kind: ImageStreamTag
-          name: lockapps-silo-bloch:latest
+          name: blockapps-silo-bloch:latest
       type: ImageChange
   status:
     availableReplicas: 0
