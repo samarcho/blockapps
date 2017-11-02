@@ -1,16 +1,7 @@
 # BlockApps-OpenShift
-You will need to get access to BlockApps bu going through the Getting Started website.
-Then follow the instructions and log into their repository. Note that you need to login
-since the startup script (below) will use that in the secret. Just run the startup.sh file
-with the project-name as an argument. There are some glitches and the deployment may need
-to be started manually which is good as we need to deploy in a particular order:
+### RUN THESE. These basiaclly get the image from the BlockApps repo and then push it to OpenShift. Then we create a project called strato (the name is fixed for now) and then creates the project. The you create a route in nginx service and click on it (under Applications/Services). You will gte the dashboard
 
-1. Zookeeper, Kafka, postgres, redis, cirrus, posgrest,
-2. strato
-3. bloch 
-4. strato, smd-ui 
-5. nginx 
-
-Create a route for the nginx component using the UI. Just look at the "services" and click on the "nginx" service. Leave the defaults. Click on the route link and you will get the login for the dashboard.
-
-Pending : To fix the actual demo, we need to fix up the paths.
+sh getImages.sh 
+oc new-project strato
+sh setupImages.sh
+sh startup.sh
