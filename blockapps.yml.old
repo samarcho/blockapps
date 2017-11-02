@@ -1,6 +1,25 @@
 apiVersion: v1
 items:
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: bloch
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     creationTimestamp: null
@@ -31,7 +50,7 @@ items:
             value: nginx
           - name: stratourl
             value: http://strato/strato-api/eth/v1.2
-          image: 172.30.1.1:5000/strato/blockapps-silo-bloch:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
           name: bloch
           ports:
           - containerPort: 8000
@@ -45,7 +64,7 @@ items:
         - bloch
         from:
           kind: ImageStreamTag
-          name: lockapps-silo-bloch:latest
+          name: bloch:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -54,6 +73,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: blockapps-docs
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -75,7 +113,7 @@ items:
         - env:
           - name: API_URL
             value: /strato-api/eth/v1.2/swagger.json
-          image: 172.30.1.1:5000/strato/blockapps-silo-blockapps-docs:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
           name: blockapps-docs
           ports:
           - containerPort: 8080
@@ -89,7 +127,7 @@ items:
         - blockapps-docs
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-blockapps-docs:latest
+          name: blockapps-docs:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -98,6 +136,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: silo-cirrus
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -130,7 +187,7 @@ items:
             value: http://starto/strato-api/eth/v1.2
           - name: zookeeper_conn
             value: zookeeper:2181
-          image: 172.30.1.1:5000/strato/blockapps-silo-cirrus:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
           name: cirrus
           resources: {}
     test: false
@@ -142,7 +199,7 @@ items:
         - cirrus
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-cirrus:latest
+          name: silo-cirrus:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -151,6 +208,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: kafka
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -182,7 +258,7 @@ items:
             value: "2147483647"
           - name: KAFKA_ZOOKEEPER_CONNECT
             value: zookeeper:2181
-          image: 172.30.1.1:5000/strato/blockapps-silo-kafka:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
           name: kafka
           ports:
           - containerPort: 9092
@@ -196,7 +272,7 @@ items:
         - kafka
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-kafka:latest
+          name: kafka:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -205,6 +281,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: nginx
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -227,7 +322,7 @@ items:
           - name: ssl
           - name: uiPassword
             value: admin
-          image: 172.30.1.1:5000/strato/blockapps-silo-nginx:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
           name: nginx
           ports:
           - containerPort: 443
@@ -242,7 +337,7 @@ items:
         - nginx
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-nginx:latest
+          name: nginx:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -251,6 +346,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: postgres
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -269,7 +383,7 @@ items:
           deploymentconfig: postgres
       spec:
         containers:
-        - image: 172.30.1.1:5000/strato/blockapps-silo-postgres:latest
+        - image: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
           name: postgres
           resources: {}
     test: false
@@ -281,7 +395,7 @@ items:
         - postgres
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-postgres:latest
+          name: postgres:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -290,6 +404,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: postgres-cirrus
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: postgres:9.6
+      from:
+        kind: DockerImage
+        name: postgres:9.6
+      generation: null
+      importPolicy: {}
+      name: "9.6"
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -317,7 +450,7 @@ items:
             value: cirrus
           - name: POSTGRES_USER
             value: postgres
-          image: 172.30.1.1:5000/strato/blockapps-postgres-cirrus:latest
+          image: postgres:9.6
           name: postgres-cirrus
           ports:
           - containerPort: 5432
@@ -331,7 +464,7 @@ items:
         - postgres-cirrus
         from:
           kind: ImageStreamTag
-          name: blockapps-postgres-cirrus:latest
+          name: postgres-cirrus:9.6
       type: ImageChange
   status:
     availableReplicas: 0
@@ -340,6 +473,26 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: postgrest
+  spec:
+    tags:
+    - annotations:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -368,7 +521,7 @@ items:
             value: postgres
           - name: PG_PORT_5432_TCP_PORT
             value: "5432"
-          image: 172.30.1.1:5000/strato/blockapps-silo-postgrest:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
           name: postgrest
           ports:
           - containerPort: 3001
@@ -382,7 +535,7 @@ items:
         - postgrest
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-postgrest:latest
+          name: postgrest:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -391,6 +544,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: redis
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: redis:3.2
+      from:
+        kind: DockerImage
+        name: redis:3.2
+      generation: null
+      importPolicy: {}
+      name: "3.2"
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -413,7 +585,7 @@ items:
           - redis-server
           - --appendonly
           - "yes"
-          image: 172.30.1.1:5000/strato/blockapps-redis:latest
+          image: redis:3.2
           name: redis
           ports:
           - containerPort: 6379
@@ -427,7 +599,7 @@ items:
         - redis
         from:
           kind: ImageStreamTag
-          name: blockapps-redis:latest
+          name: redis:3.2
       type: ImageChange
   status:
     availableReplicas: 0
@@ -436,6 +608,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: smd-ui
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -466,7 +657,7 @@ items:
           - name: STRATO_GS_MODE
           - name: STRATO_URL
             value: http://starto/strato-api/eth/v1.2
-          image: 172.30.1.1:5000/strato/blockapps-silo-smd-ui:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
           name: smd-ui
           resources: {}
     test: false
@@ -478,7 +669,7 @@ items:
         - smd-ui
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-smd-ui:latest
+          name: smd-ui:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -487,6 +678,25 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: strato
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
+      from:
+        kind: DockerImage
+        name: registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -532,7 +742,7 @@ items:
           - name: statsPrefix
           - name: statsSuffix
           - name: useSyncMode
-          image: 172.30.1.1:5000/strato/blockapps-silo-strato:latest
+          image: registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
           name: strato
           ports:
           - containerPort: 30303
@@ -547,7 +757,7 @@ items:
         - strato
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-strato:latest
+          name: strato:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -556,6 +766,26 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: zookeeper
+  spec:
+    tags:
+    - annotations:
+    - annotations:
+        openshift.io/imported-from: zookeeper:3.4.9
+      from:
+        kind: DockerImage
+        name: zookeeper:3.4.9
+      generation: null
+      importPolicy: {}
+      name: 3.4.9
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -577,7 +807,7 @@ items:
         - env:
           - name: ZOO_MY_ID
             value: "1"
-          image: 172.30.1.1:5000/strato/blockapps-zookeeper:latest
+          image: zookeeper:3.4.9
           name: zookeeper
           ports:
           - containerPort: 2181
@@ -591,7 +821,7 @@ items:
         - zookeeper
         from:
           kind: ImageStreamTag
-          name: blockapps-zookeeper:latest
+          name: zookeeper:3.4.9
       type: ImageChange
   status:
     availableReplicas: 0

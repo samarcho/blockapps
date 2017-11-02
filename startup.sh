@@ -1,5 +1,6 @@
 #!/bin/bash
-oc new-project $1 
+## CREATE STRATO PROJECT
+##oc new-project $1 
 
 
 oc login -u system:admin
