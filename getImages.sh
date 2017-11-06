@@ -9,7 +9,8 @@ docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:0664e62
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:latest
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-apex:latest
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
@@ -17,4 +18,3 @@ docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
 docker pull zookeeper:3.4.9
 docker pull redis:3.2
 docker pull  postgres:9.6
-

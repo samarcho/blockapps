@@ -32,7 +32,7 @@ do
 done
 
 #push images
-for image in postgres-cirrus zookeeper redis silo-smd-ui silo-bloch silo-blockapps-docs silo-cirrus silo-strato silo-kafka silo-nginx silo-postgres silo-postgrest
+for image in postgres-cirrus zookeeper redis silo-smd-ui silo-bloch silo-blockapps-docs silo-cirrus silo-strato silo-kafka silo-nginx silo-postgres silo-postgrest silo-apex
 do
  echo push image: $image
   docker push ${ocr_ip}/${project_name}/blockapps-$image:latest
