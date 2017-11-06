@@ -780,6 +780,20 @@ items:
   kind: Service
   metadata:
     creationTimestamp: null
+    name: apex
+  spec:
+    ports:
+    - name: 3001-tcp
+      port: 3001
+      targetPort: 3001
+    selector:
+      deploymentconfig: apex
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
     name: cirrus
   spec:
     ports:
