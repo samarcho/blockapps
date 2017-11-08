@@ -5,6 +5,8 @@
 
 oc login -u system:admin
 
+
+### SAMAR - not sure we need these next 4 lines anymore
 oc adm policy add-role-to-user system:image-builder developer 
 oc adm policy add-role-to-user system:registry developer 
 oc adm policy add-role-to-user admin developer 

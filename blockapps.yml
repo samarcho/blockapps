@@ -20,7 +20,7 @@ items:
         containers:
         - env:
           - name: cirrusurl
-            value: nginx/cirrus
+            value: http://nginx-strato.192.168.64.2.nip.io/cirrus
           - name: pghost
             value: postgres
           - name: pgpasswd
@@ -30,7 +30,6 @@ items:
           - name: stratoHost
             value: nginx
           - name: stratourl
-            value: http://strato/strato-api/eth/v1.2
           image: 172.30.1.1:5000/strato/blockapps-silo-bloch:latest
           name: bloch
           ports:
@@ -74,7 +73,7 @@ items:
         containers:
         - env:
           - name: API_URL
-            value: /strato-api/eth/v1.2/swagger.json
+            value: http://nginx-strato.192.168.64.2.nip.io/strato-api/eth/v1.2/swagger.json
           image: 172.30.1.1:5000/strato/blockapps-silo-blockapps-docs:latest
           name: blockapps-docs
           ports:
@@ -120,14 +119,14 @@ items:
           - name: postgres_db
             value: cirrus
           - name: postgres_host
-            value: postgres
+            value: postgres-cirrus
           - name: postgres_password
           - name: postgres_port
             value: "5432"
           - name: postgres_user
             value: postgres
           - name: stratourl
-            value: http://starto/strato-api/eth/v1.2
+           #value: http://nginx-strato.192.168.64.2.nip.io/strato/strato-api/eth/v1.2
           - name: zookeeper_conn
             value: zookeeper:2181
           image: 172.30.1.1:5000/strato/blockapps-silo-cirrus:latest
@@ -230,7 +229,7 @@ items:
           image: 172.30.1.1:5000/strato/blockapps-silo-nginx:latest
           name: nginx
           ports:
-          - containerPort: 443
+          #- containerPort: 443
           - containerPort: 80
           resources: {}
     test: false
@@ -271,6 +270,9 @@ items:
         containers:
         - image: 172.30.1.1:5000/strato/blockapps-silo-postgres:latest
           name: postgres
+          ports:
+          - containerPort: 5432
+          resources: {}
           resources: {}
     test: false
     triggers:
@@ -456,16 +458,21 @@ items:
         containers:
         - env:
           - name: BLOC_DOC_URL
-            value: http://block-docs/docs/?url=/bloc/v2.1/swagger.json
+           #value: http://block-docs/docs/?url=/bloc/v2.1/swagger.json
+            value: http://nginx-strato.192.168.64.2.nip.io/block-docs/docs/?url=/bloc/v2.1/swagger.json
           - name: BLOC_URL
-            value: http://bloch/bloc/v2.1
+           #value: http://bloch/bloc/v2.1
+            value: http://nginx-strato.192.168.64.2.nip.io/bloc/v2.1
           - name: CIRRUS_URL
-            value: http://cirrus//cirrussearch
+           #value: http://cirrus//cirrussearch
+            value: http://nginx-strato.192.168.64.2.nip.io/cirrussearch
           - name: NODE_NAME
           - name: STRATO_DOC_URL
           - name: STRATO_GS_MODE
           - name: STRATO_URL
-            value: http://starto/strato-api/eth/v1.2
+           #value: http://strato/strato-api/eth/v1.2
+            value: http://nginx-strato.192.168.64.2.nip.io/strato-api/eth/v1.2
+
           image: 172.30.1.1:5000/strato/blockapps-silo-smd-ui:latest
           name: smd-ui
           resources: {}
@@ -652,13 +659,28 @@ items:
     - name: 80-tcp
       port: 80
       targetPort: 80
-    - name: 443-tcp
-      port: 443
-      targetPort: 443
+    #- name: 443-tcp
+    #  port: 443
+    #  targetPort: 443
     selector:
       deploymentconfig: nginx
   status:
     loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: postgres-cirrus
+  spec:
+    ports:
+    - name: 5432-tcp
+      port: 5432
+      targetPort: 5432
+    selector:
+      deploymentconfig: postgres-cirrus
+  status:
+    loadBalancer: {}
+###SAMAR WHAT PORT
 - apiVersion: v1
   kind: Service
   metadata:
@@ -670,7 +692,7 @@ items:
       port: 5432
       targetPort: 5432
     selector:
-      deploymentconfig: postgres-cirrus
+      deploymentconfig: postgres
   status:
     loadBalancer: {}
 - apiVersion: v1
@@ -760,5 +782,16 @@ items:
       deploymentconfig: zookeeper
   status:
     loadBalancer: {}
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: nginx
+  spec:
+    host: 
+    to:
+      kind: Service
+      name: nginx
+    port:
+      targetPort: 80-tcp
 kind: List
 metadata: {}

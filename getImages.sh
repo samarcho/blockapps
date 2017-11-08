@@ -5,16 +5,20 @@ ocr_ip=$(minishift openshift registry)
 docker login -u admin -p $(oc whoami -t) ${ocr_ip}
 
 docker login -u blockapps-repo -p P@ssw0rd registry-aws.blockapps.net:5000
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:latest
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-bloch:d24b87f
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-blockapps-docs:ebc2107
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-cirrus:d9d20d3
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-kafka:648c004
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-nginx:0664e62
+#docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:750b87e
 docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-postgres:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:latest
-docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:latest
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-postgrest:ae5c1c5
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-smd-ui:25cac97
+docker pull registry-aws.blockapps.net:5000/blockapps-repo/silo-strato:6adbfdd
 docker pull zookeeper:3.4.9
 docker pull redis:3.2
 docker pull  postgres:9.6
 
+# ENABLE CORS IN OPENSHIFT
+## SAMAR - not sure why route does not work from the template so adding this line (:-
+minishift openshift config set --patch '{"corsAllowedOrigins": [".*"]}'

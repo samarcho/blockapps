@@ -1,11 +1,9 @@
 project_name=strato
 eval $(minishift docker-env)
-##ocr_ip=172.30.1.1
 ocr_ip=$(minishift openshift registry)
 #docker login -u admin -p $(oc whoami -t) 172.30.1.1:5000
 docker login -u admin -p $(oc whoami -t) ${ocr_ip}
 
-## docker login -u admin -p eYX6gDJVZuJcDXGj9SQ4Y4nlXrHKADmrcLOjcxnWVDo 172.30.1.1:5000
 
 ## tag images
 for image in $(docker images --format {{.Repository}}:{{.Tag}} | grep registry-aws.blockapps.net:5000/blockapps-repo)
@@ -13,7 +11,6 @@ do
   image_name=${image##*/}              ## getting last part of the image name:tag
   image_name=${image_name%%:*}         ## extracting name from name:tag
   echo tag image: $image as ${ocr_ip}/${project_name}/blockapps-${image_name}:latest
-##  docker tag $image ${ocr_ip}:5000/${project_name}/blockapps-${image_name}:latest
   docker tag $image ${ocr_ip}/${project_name}/blockapps-${image_name}:latest
 done
 
