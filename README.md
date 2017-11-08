@@ -3,8 +3,11 @@
 
 
 sh getImages.sh (one time only)
+
 oc new-project strato
+
 sh setupImages.sh
+
 sh startup.sh
 
 
