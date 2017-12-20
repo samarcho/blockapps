@@ -16,7 +16,7 @@ oadm policy add-scc-to-user anyuid -n strato -z default
 You will then click on the nginx route (under Applications/Services). You will get the dashboard and create users, send ether and create contracts.
 
 Also add env Vars in *strato* deployment:
-kafkaHost = kafka
-zkHost = kafka
+- kafkaHost = kafka
+- zkHost = kafka
 
 Pending : Need to fix the hardwired route in the env variables.
