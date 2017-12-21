@@ -1,9 +1,6 @@
 project_name=strato
-#eval $(minishift docker-env)
 oc login -u vmadmin -p $TOKEN_PASS
 ocr_ip="$(oc get svc -n default | grep docker-registry | awk '{print $2}'):5000"
-#docker login -u admin -p $(oc whoami -t) 172.30.1.1:5000
-echo $ocr_ip
 docker login -u vmadmin -p $(oc whoami -t) ${ocr_ip}
 
 ## tag images
