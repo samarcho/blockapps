@@ -1,16 +1,34 @@
 # BlockApps-OpenShift
-### RUN THESE. These basically get the image from the BlockApps repo and then push it to OpenShift. Then we create a project called strato (the name is fixed for now).
 
+These commands basically get the images from the BlockApps repo and then push them to OpenShift repo. Then we create a project called `strato` (the name is fixed for now) and spin up deployments.
 
-sh getImages.sh (one time only)
+## Openshift cluster
 
-oc new-project strato
+1. ssh to master node.
 
-sh setupImages.sh
+2. clone this repo and from the repo directory run:
+ ```
+ ./deploy_strato.sh
+ ```
 
-sh startup.sh
+3. Follow the white rabbit.
 
+## Minishift local
 
-You will then click on the nginx route (under Applications/Services). You will get the dashboard and create users, send ether and create contracts.
+1. Run minishift VM, set docker and oc environment for the terminal session with commands:
+ ```
+ eval $(minishift oc-env)
+ eval $(minishift docker-env)
+ ```
 
-Pending : Need to fix the hardwired route in the env variables.
+2. clone this repo and from the repo directory run:
+ ```
+ ./deploy_strato_minishift.sh
+ ```
+
+## Dashboard
+Visit the nginx hostname in your browser to open STRATO Dashboard (in Openshift Console select `STRATO` project, then Applications > Routes).
+
+Credentials to access the Dashboard:
+Openshift cluster: `admin/<password_you_set_on_deployment>`
+Minishift local: `admin/admin`

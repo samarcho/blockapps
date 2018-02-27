@@ -19,17 +19,20 @@ items:
       spec:
         containers:
         - env:
-          - name: cirrusurl
-            value: http://nginx-strato.192.168.64.2.nip.io/cirrus
-          - name: pghost
+          - name: cirrusHost
+            value: cirrus:3333
+          - name: postgres_host
             value: postgres
-          - name: pgpasswd
-          - name: pguser
+          - name: postgres_port
+            value: "5432"
+          - name: postgres_password
+            value: api
+          - name: postgres_user
             value: postgres
           - name: ssl
+            value: "false"
           - name: stratoHost
-            value: nginx
-          - name: stratourl
+            value: strato:3000
           image: 172.30.1.1:5000/strato/blockapps-silo-bloch:latest
           name: bloch
           ports:
@@ -53,6 +56,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -73,7 +77,7 @@ items:
         containers:
         - env:
           - name: API_URL
-            value: http://nginx-strato.192.168.64.2.nip.io/strato-api/eth/v1.2/swagger.json
+            value: /strato-api/eth/v1.2/swagger.json
           image: 172.30.1.1:5000/strato/blockapps-silo-blockapps-docs:latest
           name: blockapps-docs
           ports:
@@ -97,6 +101,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -119,16 +124,24 @@ items:
           - name: postgres_db
             value: cirrus
           - name: postgres_host
-            value: postgres-cirrus
+            value: postgres
           - name: postgres_password
+            value: api
           - name: postgres_port
             value: "5432"
           - name: postgres_user
             value: postgres
-          - name: stratourl
-           #value: http://nginx-strato.192.168.64.2.nip.io/strato/strato-api/eth/v1.2
+          - name: stratoHost
+            value: strato:3000
           - name: zookeeper_conn
-            value: zookeeper:2181
+            value: kafka
+          - name: postgrestHost
+            value: postgrest:3001
+          - name: blocHost
+            value: bloch:8000
+#          - name: stateDiffTopic
+          - name: SINGLE_NODE
+            value: "true"
           image: 172.30.1.1:5000/strato/blockapps-silo-cirrus:latest
           name: cirrus
           resources: {}
@@ -150,6 +163,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -169,22 +183,16 @@ items:
       spec:
         containers:
         - env:
-          - name: KAFKA_ADVERTISED_HOST_NAME
-            value: kafka
-          - name: KAFKA_ADVERTISED_PORT
+          - name: ADVERTISED_HOST
+            value: "kafka"
+          - name: ADVERTISED_PORT
             value: "9092"
-          - name: KAFKA_DELETE_TOPIC_ENABLE
-            value: "true"
-          - name: KAFKA_LOG_CLEANER_ENABLE
-            value: "false"
-          - name: KAFKA_LOG_RETENTION_HOURS
-            value: "2147483647"
-          - name: KAFKA_ZOOKEEPER_CONNECT
-            value: zookeeper:2181
-          image: 172.30.1.1:5000/strato/blockapps-silo-kafka:latest
+          image: 172.30.1.1:5000/strato/blockapps-kafka:latest
+          command: ["sh", "-c", "echo '127.0.0.1 kafka' >> /etc/hosts && supervisord -n"] # KAFKA ON OPENSHIFT ADVERTISED_HOST FIX
           name: kafka
           ports:
           - containerPort: 9092
+          - containerPort: 2181
           resources: {}
     test: false
     triggers:
@@ -195,7 +203,7 @@ items:
         - kafka
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-kafka:latest
+          name: blockapps-kafka:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -204,6 +212,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -223,13 +232,15 @@ items:
       spec:
         containers:
         - env:
-          - name: ssl
+          - name: authBasic
+            value: "true"
           - name: uiPassword
-            value: admin
+            value: __ui_password__
+#          - name: blockTime
+#          - name: ssl
           image: 172.30.1.1:5000/strato/blockapps-silo-nginx:latest
           name: nginx
           ports:
-          #- containerPort: 443
           - containerPort: 80
           resources: {}
     test: false
@@ -250,6 +261,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -268,7 +280,12 @@ items:
           deploymentconfig: postgres
       spec:
         containers:
-        - image: 172.30.1.1:5000/strato/blockapps-silo-postgres:latest
+        - env:
+          - name: POSTGRES_DB
+            value: cirrus
+          - name: POSTGRES_PASSWORD
+            value: api
+          image: 172.30.1.1:5000/strato/blockapps-postgres:latest
           name: postgres
           ports:
           - containerPort: 5432
@@ -283,7 +300,7 @@ items:
         - postgres
         from:
           kind: ImageStreamTag
-          name: blockapps-silo-postgres:latest
+          name: blockapps-postgres:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -292,56 +309,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    creationTimestamp: null
-    name: postgres-cirrus
-  spec:
-    replicas: 1
-    selector:
-      deploymentconfig: postgres-cirrus
-    strategy:
-      resources: {}
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          deploymentconfig: postgres-cirrus
-      spec:
-        containers:
-        - env:
-          - name: PG_ENV_POSTGRES_DB
-            value: cirrus
-          - name: PG_ENV_POSTGRES_USER
-            value: postgres
-          - name: POSTGRES_DB
-            value: cirrus
-          - name: POSTGRES_USER
-            value: postgres
-          image: 172.30.1.1:5000/strato/blockapps-postgres-cirrus:latest
-          name: postgres-cirrus
-          ports:
-          - containerPort: 5432
-          resources: {}
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - postgres-cirrus
-        from:
-          kind: ImageStreamTag
-          name: blockapps-postgres-cirrus:latest
-      type: ImageChange
-  status:
-    availableReplicas: 0
-    latestVersion: 0
-    observedGeneration: 0
-    replicas: 0
-    unavailableReplicas: 0
-    updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -364,8 +332,9 @@ items:
           - name: PG_ENV_POSTGRES_DB
             value: cirrus
           - name: PG_ENV_POSTGRES_HOST
-            value: postgres-cirrus
+            value: postgres
           - name: PG_ENV_POSTGRES_PASSWORD
+            value: api
           - name: PG_ENV_POSTGRES_USER
             value: postgres
           - name: PG_PORT_5432_TCP_PORT
@@ -393,6 +362,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -438,6 +408,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -457,22 +428,29 @@ items:
       spec:
         containers:
         - env:
-          - name: BLOC_DOC_URL
-           #value: http://block-docs/docs/?url=/bloc/v2.1/swagger.json
-            value: http://nginx-strato.192.168.64.2.nip.io/block-docs/docs/?url=/bloc/v2.1/swagger.json
-          - name: BLOC_URL
-           #value: http://bloch/bloc/v2.1
-            value: http://nginx-strato.192.168.64.2.nip.io/bloc/v2.1
-          - name: CIRRUS_URL
-           #value: http://cirrus//cirrussearch
-            value: http://nginx-strato.192.168.64.2.nip.io/cirrussearch
+          - name: NODE_HOST
+            value: nginx-strato.__public_ip__.nip.io
           - name: NODE_NAME
-          - name: STRATO_DOC_URL
-          - name: STRATO_GS_MODE
+            value: __public_ip__
+          - name: BLOC_URL
+            value: http://nginx-strato.__public_ip__.nip.io/bloc/v2.2
+          - name: BLOC_DOC_URL
+            value: http://nginx-strato.__public_ip__.nip.io/docs/?url=/bloc/v2.2/swagger.json
           - name: STRATO_URL
-           #value: http://strato/strato-api/eth/v1.2
-            value: http://nginx-strato.192.168.64.2.nip.io/strato-api/eth/v1.2
-
+            value: http://nginx-strato.__public_ip__.nip.io/strato-api/eth/v1.2
+          - name: STRATO_DOC_URL
+            value: http://nginx-strato.__public_ip__.nip.io/docs/?url=/strato-api/eth/v1.2/swagger.json
+          - name: CIRRUS_URL
+            value: http://nginx-strato.__public_ip__.nip.io/cirrus/search
+          - name: APEX_URL
+            value: http://nginx-strato.__public_ip__.nip.io/apex-api
+          - name: authBasic
+            value: "true"
+          - name: uiPassword
+            value: admin
+#          - name: STRATO_GS_MODE
+          - name: SINGLE_NODE
+            value: "true"
           image: 172.30.1.1:5000/strato/blockapps-silo-smd-ui:latest
           name: smd-ui
           resources: {}
@@ -494,6 +472,63 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: apex
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: apex
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: apex
+      spec:
+        containers:
+        - env:
+          - name: NODE_HOST
+            value: nginx-strato.__public_ip__.nip.io
+          - name: SINGLE_NODE
+            value: "true"
+#          - name: STRATO_GS_MODE
+          - name: stratoHost
+            value: strato:3000
+          - name: blocHost
+            value: bloch:8000
+          - name: cirrusHost
+            value: cirrus:3333
+          - name: postgres_host
+            value: postgres
+          - name: postgres_port
+            value: "5432"
+          image: 172.30.1.1:5000/strato/blockapps-silo-apex:latest
+          name: apex
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - apex
+        from:
+          kind: ImageStreamTag
+          name: blockapps-silo-apex:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -522,6 +557,8 @@ items:
           - name: evmTraceMode
           - name: genesis
           - name: genesisBlock
+          - name: kafkaHost
+            value: kafka
           - name: lazyBlocks
           - name: minBlockDifficulty
           - name: mineBlocks
@@ -529,9 +566,18 @@ items:
           - name: miningAlgorithm
           - name: miningThreads
           - name: networkID
-          - name: noMinPeers
-            value: "false"
+          - name: numMinPeers
+          - name: postgres_host
+            value: postgres
+          - name: postgres_user
+            value: postgres
+          - name: postgres_password
+            value: api
           - name: redisBDBNumber
+          - name: redisHost
+            value: redis
+          - name: redisPort
+            value: "6379"
           - name: statsEnable
           - name: statsFlush
           - name: statsHost
@@ -539,6 +585,8 @@ items:
           - name: statsPrefix
           - name: statsSuffix
           - name: useSyncMode
+          - name: zkHost
+            value: kafka
           image: 172.30.1.1:5000/strato/blockapps-silo-strato:latest
           name: strato
           ports:
@@ -563,50 +611,7 @@ items:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    creationTimestamp: null
-    name: zookeeper
-  spec:
-    replicas: 1
-    selector:
-      deploymentconfig: zookeeper
-    strategy:
-      resources: {}
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          deploymentconfig: zookeeper
-      spec:
-        containers:
-        - env:
-          - name: ZOO_MY_ID
-            value: "1"
-          image: 172.30.1.1:5000/strato/blockapps-zookeeper:latest
-          name: zookeeper
-          ports:
-          - containerPort: 2181
-          resources: {}
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - zookeeper
-        from:
-          kind: ImageStreamTag
-          name: blockapps-zookeeper:latest
-      type: ImageChange
-  status:
-    availableReplicas: 0
-    latestVersion: 0
-    observedGeneration: 0
-    replicas: 0
-    unavailableReplicas: 0
-    updatedReplicas: 0
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -617,10 +622,14 @@ items:
     - name: 8000-tcp
       port: 8000
       targetPort: 8000
+    - name: 8002-tcp
+      port: 8002
+      targetPort: 8002
     selector:
       deploymentconfig: bloch
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -635,6 +644,7 @@ items:
       deploymentconfig: blockapps-docs
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -645,10 +655,14 @@ items:
     - name: 9092-tcp
       port: 9092
       targetPort: 9092
+    - name: 2181-tcp
+      port: 2181
+      targetPort: 2181
     selector:
       deploymentconfig: kafka
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -659,28 +673,11 @@ items:
     - name: 80-tcp
       port: 80
       targetPort: 80
-    #- name: 443-tcp
-    #  port: 443
-    #  targetPort: 443
     selector:
       deploymentconfig: nginx
   status:
     loadBalancer: {}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    creationTimestamp: null
-    name: postgres-cirrus
-  spec:
-    ports:
-    - name: 5432-tcp
-      port: 5432
-      targetPort: 5432
-    selector:
-      deploymentconfig: postgres-cirrus
-  status:
-    loadBalancer: {}
-###SAMAR WHAT PORT
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -695,6 +692,7 @@ items:
       deploymentconfig: postgres
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -709,6 +707,7 @@ items:
       deploymentconfig: postgrest
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -723,6 +722,7 @@ items:
       deploymentconfig: redis
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -736,10 +736,15 @@ items:
     - name: 30303-tcp
       port: 30303
       targetPort: 30303
+#    #TODO: CHECK HOW TO MAP UDP PORT (FOR MULTINODE)
+#    - name: 30303-udp
+#      port: 30303
+#      targetPort: 30303
     selector:
       deploymentconfig: strato
   status:
     loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -754,6 +759,22 @@ items:
       deploymentconfig: smd-ui
   status:
     loadBalancer: {}
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: apex
+  spec:
+    ports:
+    - name: 3001-tcp
+      port: 3001
+      targetPort: 3001
+    selector:
+      deploymentconfig: apex
+  status:
+    loadBalancer: {}
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -768,30 +789,18 @@ items:
       deploymentconfig: cirrus
   status:
     loadBalancer: {}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    creationTimestamp: null
-    name: zookeeper
-  spec:
-    ports:
-    - name: 2181-tcp
-      port: 2181
-      targetPort: 2181
-    selector:
-      deploymentconfig: zookeeper
-  status:
-    loadBalancer: {}
+
 - kind: Route
   apiVersion: v1
   metadata:
     name: nginx
   spec:
-    host: 
+    host:
     to:
       kind: Service
       name: nginx
     port:
       targetPort: 80-tcp
+
 kind: List
 metadata: {}
