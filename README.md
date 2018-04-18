@@ -4,6 +4,11 @@ These commands basically get the images from the BlockApps repo and then push th
 
 ## Openshift cluster
 
+#### Domain name prerequsites
+When running on custom domain name (not using `nip.io`) - add the `*.<subdomain>` record in your DNS settings (e.g. `*.openshift` in my `example.com` domain settings)
+
+#### Deploy STRATO 
+
 1. ssh to master node.
 
 2. clone this repo and from the repo directory run:
