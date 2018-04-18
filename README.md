@@ -1,3 +1,6 @@
+# REPO IS DEPRECATED: 
+Please, use [https://github.com/blockapps/strato-openshift](https://github.com/blockapps/strato-openshift) for the latest updates
+
 # BlockApps-OpenShift
 
 These commands basically get the images from the BlockApps repo and then push them to OpenShift repo. Then we create a project called `strato` (the name is fixed for now) and spin up deployments.
